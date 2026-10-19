@@ -1,0 +1,7 @@
+{
+  "appId": "br.com.ossu.app",
+  "appName": "Ossu",
+  "webDir": "www",
+  "backgroundColor": "#12161A",
+  "server": { "androidScheme": "https" }
+}

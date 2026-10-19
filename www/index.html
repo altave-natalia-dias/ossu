@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12161A">
+<title>Ossu — App de Jiu-Jitsu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:dark;--bg:#12161A;--card:#1C2329;--line:#2A333B;--tx:#F2F4F5;--mu:#9AA6AF;--gold:#E8C547}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:'Barlow',system-ui,sans-serif}
+body{padding-top:env(safe-area-inset-top,0)}
+main{max-width:520px;margin:0 auto;padding:20px 20px 120px}
+h1{font:700 36px/1 'Barlow Condensed',sans-serif;letter-spacing:1px;margin:8px 0 12px;text-transform:uppercase}
+.card{background:var(--card);border-radius:14px;padding:16px;margin:10px 0}
+.mu{color:var(--mu);font-size:14px}.gold{color:var(--gold);font-weight:600}
+.q{color:var(--gold);font-weight:600;font-size:17px;margin:0 0 14px}
+button,input,textarea{font:inherit;color:var(--tx)}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;border:0;border-radius:12px;background:var(--gold);color:#12161A;font-size:18px;font-weight:600;margin:10px 0;cursor:pointer;text-decoration:none}
+.btn.o{background:transparent;border:1px solid var(--line);color:var(--tx);font-size:16px}
+.btn:disabled{opacity:.4}
+input,textarea{width:100%;min-height:52px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:6px 0}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.chip{flex:none;padding:10px 16px;border-radius:20px;background:var(--card);color:var(--mu);font-weight:600;border:0;min-height:44px;cursor:pointer}
+.chip.on{background:var(--gold);color:#12161A}
+.bar{height:6px;border-radius:3px;background:var(--line);margin-top:8px}.bar i{display:block;height:6px;border-radius:3px;background:var(--gold)}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:56px;cursor:pointer;width:100%;border:0;text-align:left;background:var(--card);border-radius:14px;padding:14px 16px;margin:8px 0}
+.seg{display:flex;gap:6px;margin:14px 0}.seg i{flex:1;height:4px;border-radius:2px;background:var(--line)}.seg i.on{background:var(--gold)}
+.stats{display:flex;gap:10px}.stats .card{flex:1;margin:10px 0}.stats b{font:700 30px 'Barlow Condensed',sans-serif;display:block}
+.chart{display:flex;gap:8px;height:110px;align-items:flex-end}.chart div{flex:1;text-align:center;font-size:12px;color:var(--mu)}.chart i{display:block;width:100%;border-radius:6px;background:var(--gold);margin-bottom:4px;min-height:4px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#171C21;border-top:1px solid var(--line);padding:6px 6px calc(10px + env(safe-area-inset-bottom,0))}
+nav button{flex:1;min-height:52px;background:none;border:0;color:var(--mu);font-weight:600;font-size:13px}
+nav button.on{color:var(--gold)}
+.ring{width:220px;height:220px;border-radius:50%;margin:24px auto 8px;border:3px solid var(--gold);background:rgba(232,197,71,.18);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;transform:scale(.6)}
+.ring.go{animation:br 14s ease-in-out infinite}
+@keyframes br{0%{transform:scale(.6)}28.5%{transform:scale(1)}57%{transform:scale(1)}100%{transform:scale(.6)}}
+@media (prefers-reduced-motion:reduce){.ring.go{animation:none;transform:scale(.9)}}
+.note{font-size:12px;color:var(--mu);margin-top:14px;line-height:1.4}
+.goal{--p:0;width:112px;height:112px;border-radius:50%;background:conic-gradient(var(--gold) calc(var(--p)*1%),var(--line) 0);display:flex;align-items:center;justify-content:center;position:relative;flex:none}
+.goal::before{content:'';position:absolute;inset:10px;border-radius:50%;background:var(--card)}.goal>div{position:relative;text-align:center}
+.goal b{font:700 28px 'Barlow Condensed',sans-serif;display:block}
+.wk{display:flex;gap:6px;justify-content:space-between}.wk div{text-align:center;font-size:12px;color:var(--mu)}
+.wk i{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--line);margin-bottom:4px;font-style:normal;color:#12161A;font-weight:700}.wk i.on{background:var(--gold)}
+.bd{display:inline-block;padding:8px 12px;border-radius:20px;margin:4px 4px 0 0;font-size:13px;font-weight:600;background:var(--line);color:var(--mu)}.bd.on{background:var(--gold);color:#12161A}
+.ph{width:100%;border-radius:14px;display:block;margin:8px 0}
+.ph0{border:1px dashed var(--line);border-radius:14px;padding:22px 16px;text-align:center;color:var(--mu);font-size:14px;margin:8px 0}
+#toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0));transform:translateX(-50%);background:var(--gold);color:#12161A;font-weight:600;padding:10px 18px;border-radius:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<div id="toast" role="status"></div>
+<nav id="nav"></nav>
+<script>
+const Q=['Quem cai e levanta aprende duas vezes.','O tatame não pergunta quem você é. Pergunta se você veio.','Respire. Confie. Continue.','Cada derrota no treino é uma aula grátis.','Seja paciente na guarda e firme na decisão.','A faixa só amarra o que o treino já construiu.','Hoje você treina para quem será daqui a um ano.','Humildade na entrada, constância na jornada.','Bater o tapa é inteligência: você volta amanhã.','Disciplina é aparecer mesmo sem vontade.','Quem treina com respeito cresce junto.','Oss! Um dia de cada vez.'];
+const BELTS=['Branca','Azul','Roxa','Marrom','Preta'];
+const mk=(b,m,id,t,q,k,e,s,a)=>({b,m,id,t,q,k,e,a,s:s.map(x=>x.split('|'))});
+const T=[
+mk('Branca','Guarda fechada','tesoura','Raspagem de tesoura','raspagem de tesoura jiu jitsu passo a passo','Puxe e corte ao mesmo tempo.','Tentar puxar só com os braços, sem girar o quadril.',['Controle|Na guarda fechada, segure a gola com uma mão e a manga do mesmo lado do oponente com a outra.','Abra e gire o quadril|Abra a guarda, gire o quadril de lado e apoie uma canela na barriga dele.','Posicione as pernas|Estenda a outra perna ao lado do joelho dele, do lado oposto ao da canela que está na barriga.','Faça a tesoura|Puxe a manga e a gola enquanto a perna de cima empurra e a de baixo corta, como uma tesoura.','Termine por cima|Acompanhe o movimento, suba para a posição por cima e estabilize antes de continuar.'],['Puxe a manga para o seu peito para ele não postar a mão.','Quadril de lado e canela firme na barriga dele.','Perna de baixo colada ao joelho dele para ele não recuar.','Puxe e corte ao mesmo tempo, usando as pernas.','Prenda a manga ao subir para não ser raspado de volta.']),
+mk('Branca','Fugas','ponte','Fuga da montada: ponte e rolamento','fuga da montada ponte e rolamento jiu jitsu','Prenda braço e perna do mesmo lado antes da ponte.','Fazer a ponte para cima sem prender braço e perna.',['Proteja-se|Mantenha os cotovelos junto ao corpo e prenda um braço e a perna do mesmo lado dele.','Pés no chão|Traga os calcanhares perto dos glúteos, com o pé do lado preso bem apoiado.','Ponte|Eleve o quadril com força, empurrando o chão com os pés.','Role|Gire para o lado do braço preso, levando o oponente junto.','Estabilize|Termine na guarda ou por cima, com o corpo protegido.'],['Não deixe nenhum braço solto ao lado da cabeça dele.','Quanto mais perto dos glúteos, mais força na ponte.','Empurre o quadril para cima e para o lado do braço preso.','Vire o rosto para o lado do giro.','Não fique de costas: recupere a guarda ou passe.']),
+mk('Branca','Fugas','quadril','Fuga de quadril (camarão)','fuga de quadril camarão jiu jitsu iniciante','O movimento vem do quadril, não do corpo todo.','Deslizar de costas sem criar ângulo com o quadril.',['Posição|Deitado de costas, com as mãos à frente para afastar o oponente.','Apoio|Apoie o pé e o ombro de um lado do corpo.','Afaste o quadril|Empurre o quadril para trás e para o lado, abrindo espaço.','Recupere a guarda|Traga o joelho para dentro do espaço aberto e retome a guarda.'],['As mãos à frente servem de escudo, sem empurrar com força.','Use o pé, não só o braço.','O movimento é do quadril, não do corpo todo.','O joelho entra antes de ele fechar o espaço.']),
+mk('Branca','Finalizações','armlock','Chave de braço da guarda','chave de braço da guarda jiu jitsu passo a passo','Suba o quadril devagar. Tapa = soltar na hora.','Elevar o quadril rápido, sem controle.',['Controle o braço|Segure o braço do oponente junto ao seu peito, mantendo o controle da manga.','Quadril de lado|Gire o quadril de lado, criando o ângulo.','Posicione as pernas|Passe uma perna sobre o peito dele e a outra sobre o rosto, joelhos juntos.','Aplique com cuidado|Eleve o quadril devagar, com o polegar dele para cima. Ao ouvir o tapa do parceiro, solte na hora.'],['Braço dele colado ao seu peito, sem folga.','Gire até ver o rosto dele pelo lado.','Joelhos juntos para ele não tirar o braço.','Suba o quadril devagar. Tapa do parceiro = soltar na hora.']),
+mk('Branca','Finalizações','americana','Americana da montada','americana da montada jiu jitsu passo a passo','Cotovelo dele no chão e pressão controlada.','Soltar a mão que prende o pulso dele.',['Estabilize a montada|Sente com os joelhos junto às costelas dele e o quadril baixo.','Prenda o pulso|Pressione o pulso dele contra o chão, junto à cabeça, com uma mão.','Feche a figura 4|Passe o outro braço por baixo do cotovelo dele e segure o seu próprio pulso.','Aplique|Arraste a mão dele em direção ao quadril dele, devagar, mantendo o cotovelo no chão. Solte no tapa.']),
+mk('Branca','Finalizações','cruzado','Estrangulamento de gola cruzada','estrangulamento gola cruzada guarda fechada jiu jitsu','Quebre a postura antes de apertar.','Apertar sem antes puxá-lo para baixo.',['Primeira gola|Com uma mão, pegue fundo na gola dele, com o polegar para dentro.','Segunda gola|Cruze a outra mão e pegue a gola do outro lado, também com o polegar para dentro.','Quebre a postura|Mantendo a guarda fechada, puxe-o para baixo, colando-o ao seu peito.','Aperte|Gire os punhos e leve os cotovelos para baixo e para fora, até o tapa. Solte na hora.']),
+mk('Azul','Finalizações','triangulo','Triângulo da guarda','triângulo da guarda jiu jitsu passo a passo','Joelhos apertados e quadril em ângulo.','Ficar de frente para ele, sem ângulo.',['Controle os braços|Da guarda fechada, deixe um braço dele para dentro e o outro para fora das suas pernas.','Abra e suba|Abra a guarda, suba o quadril e posicione uma perna sobre o ombro dele.','Feche o triângulo|Cruze o pé da perna de cima atrás do joelho da outra, prendendo pescoço e braço.','Ajuste e finalize|Puxe a cabeça dele para baixo e gire o quadril em ângulo até o tapa.']),
+mk('Azul','Raspagens','borboleta','Raspagem da guarda borboleta','raspagem guarda borboleta jiu jitsu passo a passo','Elevação e giro acontecem juntos.','Esquecer o underhook e empurrar só com a perna.',['Sente-se|Sentado, coloque os pés por dentro das coxas dele, formando os ganchos.','Underhook|Passe um braço por baixo da axila dele e segure as costas.','Deite e eleve|Deite para o lado do underhook, puxando-o, e eleve com o gancho do lado oposto.','Termine por cima|Acompanhe o giro e estabilize na lateral ou na meia-guarda.']),
+mk('Azul','Passagens','toreando','Passagem toreando','passagem de guarda toreando jiu jitsu','Mantenha a postura e circule rápido.','Ficar parado na frente das pernas dele.',['Pegadas|Em pé, segure as calças dele na altura dos joelhos.','Empurre as pernas|Empurre as pernas dele para um lado, tirando os pés do seu quadril.','Circule|Dê passos rápidos para o lado oposto, passando pela linha das pernas.','Estabilize|Chegue na lateral com o peso no peito dele e controle a cabeça e o quadril.']),
+mk('Azul','Finalizações','kimura','Kimura da guarda','kimura da guarda jiu jitsu passo a passo','Use o corpo todo, sem forçar o ombro.','Torcer só com o braço, sem girar o quadril.',['Prenda o pulso|Quando ele postar a mão no seu peito, segure o pulso com a mão do mesmo lado.','Figura 4|Sente-se, passe o outro braço por cima do dele e segure o seu próprio pulso.','Crie o ângulo|Gire o corpo para o lado da pegada, afastando o quadril.','Aplique|Leve a mão dele em direção às costas dele, devagar. Solte no tapa.']),
+mk('Azul','Passagens','joelhocortado','Passagem de joelho cortado','passagem joelho cortado knee slice jiu jitsu','Peso no ombro dele durante todo o corte.','Cortar o joelho sem controlar o tronco dele.',['Controle o tronco|Faça um crossface com um braço e um underhook do outro lado para travar o ombro.','Abaixe o peso|Mantenha o quadril baixo e o peso no peito dele.','Corte o joelho|Deslize o joelho por cima da coxa dele em direção ao chão do lado oposto.','Passe e estabilize|Tire o pé dele, passe a perna e finalize na lateral com o peito pesado.']),
+mk('Roxa','Finalizações','omoplata','Omoplata','omoplata da guarda jiu jitsu passo a passo','Sente e gire o quadril para tirar a pressão.','Deixar o ombro dele livre para rolar.',['Controle a manga|Da guarda, controle a manga dele e sente-se.','Perna sobre o ombro|Passe a perna do mesmo lado por cima do ombro dele, girando o quadril.','Prenda o braço|Sente e prenda o braço dele entre as pernas, apertando os joelhos.','Finalize|Controle a cintura dele e empurre o quadril para o lado, aplicando pressão no ombro, devagar.']),
+mk('Roxa','Raspagens','dlr','Raspagem De La Riva','raspagem de la riva jiu jitsu básica','Gancho firme atrás do joelho dele.','Soltar o gancho antes de o desequilíbrio acontecer.',['Gancho|Coloque o pé por fora da perna dele, enroscando atrás do joelho.','Pegadas|Segure a manga e a calça (tornozelo) do mesmo lado.','Desequilibre|Puxe a manga e empurre o outro pé no quadril dele para tirá-lo da base.','Levante e passe por cima|Suba junto, estabilize por cima e controle a perna.']),
+mk('Roxa','Passagens','overunder','Passagem over-under','passagem over under jiu jitsu','Ombro pesado na coxa dele.','Ficar de pé e perder a pressão.',['Over e under|Passe um braço por cima da perna dele e o outro por baixo da outra, juntando as mãos.','Ombro na coxa|Coloque o ombro na coxa dele e pese o corpo.','Caminhe|Dê passos curtos em volta, mantendo a pressão.','Estabilize|Feche na lateral com o peito pesado e controle a cabeça.']),
+mk('Roxa','Transições','armdrag','Arm drag para as costas','arm drag pegar as costas jiu jitsu','Quadril gira junto com o puxão.','Puxar o braço sem sair do eixo dele.',['Pegue o braço|Segure o pulso ou manga dele com uma mão e o cotovelo com a outra.','Arraste|Puxe o braço dele cruzando o corpo e saia para o lado.','Gire|Gire o quadril e vá para trás dele.','Costas|Prenda com um braço no peito (cinto de segurança) e coloque os ganchos.']),
+mk('Roxa','Finalizações','armlockmontada','Chave de braço da montada','chave de braço da montada jiu jitsu passo a passo','Joelhos juntos e quadril alto.','Soltar o controle do braço ao passar a perna.',['Monte alta|Suba as pernas e prenda o braço dele junto ao seu peito.','Gire|Gire apoiando os pés no chão ao lado da cabeça dele.','Passe a perna|Passe a perna por cima da cabeça dele e deite de costas.','Finalize|Aperte os joelhos e eleve o quadril devagar. Solte no tapa.']),
+mk('Marrom','Raspagens','xguard','Raspagem de X-guard','raspagem x guard jiu jitsu passo a passo','Sua coxa fica por dentro e eleva a perna dele.','Ficar longe demais da perna dele.',['Entre as pernas|Sentado na guarda aberta, deslize por baixo de uma das pernas dele.','Posicione o gancho|Coloque a sua perna por dentro da coxa dele e o outro pé no quadril.','Segure o tornozelo|Segure o tornozelo dele para impedir o apoio.','Eleve|Eleve com a coxa, levante e termine por cima.']),
+mk('Marrom','Passagens','legdrag','Passagem leg drag','passagem leg drag jiu jitsu passo a passo','Controle da perna junto ao seu quadril.','Deixar o joelho dele voltar para dentro.',['Controle a perna|Em pé, segure a perna dele e leve-a para o lado do seu quadril.','Arraste|Dê um passo lateral, arrastando a perna dele pelo chão.','Pressione|Sente o quadril sobre o quadril dele e controle a gola.','Estabilize|Feche na lateral ou avance para as costas.']),
+mk('Marrom','Finalizações','arcoflecha','Arco e flecha (costas)','estrangulamento arco e flecha costas jiu jitsu','Ombro e perna criam o arco.','Puxar a gola sem esticar o corpo.',['Costas|Controle as costas com os ganchos e um braço no peito.','Gola profunda|Segure fundo a gola do lado que está no seu braço de cima.','Segure a calça|Com a outra mão, segure a calça dele na altura do joelho.','Estique|Estique o corpo e puxe a gola até o tapa. Solte na hora.']),
+mk('Marrom','Finalizações','tornozelo','Chave de tornozelo reta','chave de tornozelo reta jiu jitsu','Só treine com sensei supervisionando.','Aplicar força rápida na articulação.',['Controle a perna|Em posição de controle, tire o pé dele do chão e prenda sob a axila.','Posicione|Coloque a lâmina do antebraço no tendão de Aquiles dele.','Feche as mãos|Una as mãos e alinhe o corpo com a perna dele.','Aplique|Arqueie o quadril devagar até o tapa. Solte na hora.']),
+mk('Preta','Transições','berimbolo','Berimbolo','berimbolo jiu jitsu passo a passo','Giro sob a perna e quadril ao lado das costas dele.','Girar sem controle da perna.',['Controle|De La Riva, controle a calça e a manga.','Gire por baixo|Gire o corpo por baixo da perna dele, invertendo.','Cintura|Segure a cintura ou a coxa e leve o quadril para trás dele.','Costas|Pegue as costas e coloque os ganchos.']),
+mk('Preta','Passagens','smash','Passagem de pressão (smash pass)','passagem de pressão smash pass jiu jitsu','Pressão constante no quadril dele.','Passar sem controlar o quadril.',['Pegue as pernas|Em pé, segure as pernas dele e empurre-as para o peito dele.','Pese o ombro|Coloque o ombro nas coxas dele e pese o corpo.','Passe o joelho|Passe o joelho por dentro, mantendo a pressão.','Estabilize|Chegue à lateral com o peito sobre o dele.']),
+mk('Preta','Defesas','defarmlock','Defesa de chave de braço','defesa de chave de braço jiu jitsu','Cotovelo protegido e mãos juntas.','Esticar o braço para escapar.',['Proteja o braço|Mantenha o braço dobrado e as mãos unidas.','Ângulo|Gire o corpo na direção da cabeça dele, tirando o ângulo.','Postura|Mantenha a postura, pisando firme.','Tire o cotovelo|Saia puxando o cotovelo para fora e recupere a posição.']),
+mk('Preta','Finalizações','baseball','Estrangulamento baseball','estrangulamento baseball choke jiu jitsu','Cruze as mãos e feche os cotovelos.','Apertar sem alinhar as pegadas.',['Primeira gola|Do topo, pegue fundo na gola dele com uma mão.','Segunda gola|Cruze a outra mão e segure a gola do outro lado.','Ajuste|Gire o corpo, aproximando o peito do dele.','Aperte|Feche os cotovelos como quem segura um taco, até o tapa. Solte na hora.'])
+];
+const LV=['Não iniciada','Conhecendo','Praticando','Aplicando no treino','Dominando'];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ds=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+let S={name:'',logs:[],lvl:{},reps:{},img:{},w:[],xp:0,xpd:{},xpk:{},act:{},repx:{},mc:0};
+try{S=Object.assign(S,JSON.parse(localStorage.getItem('ossu2')||localStorage.getItem('ossu')||'{}'))}catch(e){}
+if(S.done){for(const k in S.done)S.lvl[k]=Math.max(S.lvl[k]||0,1);delete S.done}
+const save=()=>{try{localStorage.setItem('ossu2',JSON.stringify(S));return true}catch(e){return false}};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800)}
+function xp(n,key,msg){if(key){if(S.xpk[key])return;S.xpk[key]=1}S.xp+=n;const d=ds();S.xpd[d]=(S.xpd[d]||0)+n;S.act[d]=1;save();toast('+'+n+' XP'+(msg?' · '+msg:''))}
+function streak(){let n=0,d=new Date();if(!S.act[ds(d)])d.setDate(d.getDate()-1);while(S.act[ds(d)]){n++;d.setDate(d.getDate()-1)}return n}
+const quote=()=>{const n=new Date();return Q[Math.floor((n-new Date(n.getFullYear(),0,0))/864e5)%Q.length]};
+const pct=l=>l.length?Math.round(l.reduce((a,t)=>a+(S.lvl[t.id]||0),0)/l.length*25):0;
+const bpct=b=>pct(T.filter(t=>t.b===b));
+let V='home',cur=null,step=0,belt='Branca',timer=null,left=0,mins=5,t0=0;
+function nav(){const it=[['home','Início'],['trail','Trilha'],['mind','Mente'],['me','Perfil']];
+$('#nav').innerHTML=it.map(([k,l])=>`<button class="${V===k||(V==='tech'&&k==='trail')?'on':''}" onclick="go('${k}')">${l}</button>`).join('')}
+function go(v){if(timer&&v!=='mind')stop();V=v;render()}
+let lastV='home';
+const SHARE_URL=(location.protocol.startsWith('http')&&!/^localhost/.test(location.host))?location.href:'https://claude.ai/artifact/QdHzBNxV3Nwiqcyn6rBbYf';
+window.addEventListener('popstate',()=>{if(timer&&V!=='mind')stop();V=V==='tech'?'trail':'home';render(true)});
+function render(pop){if(!pop&&((lastV==='home'&&V!=='home')||(V==='tech'&&lastV!=='tech')))history.pushState(null,'');lastV=V;nav();scrollTo(0,0);({home,trail,tech,mind,me})[V]()}
+function home(){const st=streak(),lv=Math.floor(S.xp/100)+1,dx=S.xpd[ds()]||0,goal=20;
+const wk=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));return[S.act[ds(d)],'DSTQQSS'[d.getDay()]]});
+const next=T.find(t=>(S.lvl[t.id]||0)<1);
+$('#app').innerHTML=`<p class="mu" style="margin:0">Oss${S.name?', '+esc(S.name):''}!</p><h1>Início</h1><p class="q">“${quote()}”</p>
+<div class="card row" style="align-items:center"><div class="goal" style="--p:${Math.min(100,dx/goal*100)}"><div><b>${dx}/${goal}</b><span class="mu" style="font-size:12px">XP hoje</span></div></div>
+<div><div style="font:700 44px 'Barlow Condensed',sans-serif;color:var(--gold)">${st} ${st===1?'dia':'dias'}</div><div class="mu">de sequência</div><div style="margin-top:10px;font-weight:600">Nível ${lv} · ${S.xp} XP</div><div class="bar"><i style="width:${S.xp%100}%"></i></div></div></div>
+<div class="card"><div class="wk">${wk.map(([a,l])=>`<div><i class="${a?'on':''}">${a?'✓':''}</i>${l}</div>`).join('')}</div></div>
+${next?`<button class="btn" onclick="open_('${next.id}')">Continuar: ${next.t}</button>`:'<div class="card gold">Você viu todas as técnicas. Oss!</div>'}
+<button class="btn o" onclick="go('mind')">Respirar 3 min (+15 XP)</button>
+<p class="note">Ganhe XP ao concluir técnicas (+20), registrar treino (+30), meditar (+15) e pesar-se (+10). Meta diária: ${goal} XP.</p>`}
+function trail(){const l=T.filter(t=>t.b===belt);
+$('#app').innerHTML=`<h1>Sua trilha</h1><div class="chips">${BELTS.map(b=>`<button class="chip ${b===belt?'on':''}" onclick="belt='${b}';trail()">${b} ${bpct(b)}%</button>`).join('')}</div>
+<div class="card"><span class="gold">FAIXA ${belt.toUpperCase()}</span><div style="font-size:20px;font-weight:600;margin-top:4px">${bpct(belt)}% de evolução</div><div class="bar"><i style="width:${bpct(belt)}%"></i></div></div>
+${l.map(t=>`<button class="item" onclick="open_('${t.id}')"><span><b>${t.t}</b><br><span class="mu">${t.m} · ${t.s.length} passos</span></span><span class="gold">${(S.lvl[t.id]||0)*25}%</span></button>`).join('')}
+<p class="note">A divisão por faixa varia entre academias. Confirme com seu sensei.</p>`}
+function open_(id){cur=T.find(t=>t.id===id);step=0;belt=cur.b;V='tech';render()}
+function tech(){const t=cur,s=t.s[step],last=step===t.s.length-1,r=S.reps[t.id]||0,k=t.id+':'+step,img=S.img[k],lv=S.lvl[t.id]||0;
+$('#app').innerHTML=`<button class="chip" onclick="go('trail')">‹ Voltar</button><h1 style="margin-top:14px">${t.t}</h1><p class="mu">${t.m} · Faixa ${t.b.toLowerCase()} · ${lv*25}% de evolução</p>
+<a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/results?search_query=${encodeURIComponent(t.q)}">▶ Assistir vídeo-aula</a>
+<div class="seg">${t.s.map((_,i)=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>
+<div class="card"><span class="gold">PASSO ${step+1} DE ${t.s.length}</span><div style="font-size:21px;font-weight:600;margin:6px 0">${s[0]}</div><div style="font-size:17px;line-height:1.45">${s[1]}</div>
+${img?`<img class="ph" src="${img}" alt="Foto do passo ${step+1}">`:'<div class="ph0">Sem foto neste passo.</div>'}
+<div class="row"><label class="btn o" style="margin:0;min-height:48px;font-size:15px">${img?'Trocar foto':'Adicionar foto'}<input type="file" accept="image/*" hidden onchange="photo(this.files[0])"></label>${img?'<button class="btn o" style="margin:0;min-height:48px;font-size:15px" onclick="delete S.img[\''+k+'\'];save();tech()">Remover</button>':''}</div>
+<div class="mu" style="margin-top:12px;font-size:15px"><b style="color:var(--gold)">Atenção:</b> ${t.a?t.a[step]:t.k}</div></div>
+${last?`<div class="card"><b>Erro comum</b><div class="mu" style="margin-top:4px">${t.e}</div></div>`:''}
+<div class="row"><button class="btn o" ${step?'':'disabled'} onclick="step--;tech()">Voltar</button><button class="btn" style="flex:2" onclick="nextStep()">${last?'Concluir':'Próximo passo'}</button></div>
+<div class="card"><b>Como está sua técnica?</b><div class="chips" style="margin-top:8px">${LV.slice(1).map((n,i)=>`<button class="chip ${lv===i+1?'on':''}" onclick="rate(${i+1})">${n}</button>`).join('')}</div></div>
+<div class="card"><b>Repetições de treino</b><div class="row" style="align-items:center;margin-top:8px"><span style="font:700 34px 'Barlow Condensed',sans-serif">${r}</span><button class="btn o" style="margin:0" onclick="rep(-1)">−1</button><button class="btn" style="margin:0" onclick="rep(1)">+1</button></div></div>
+<p class="note">Treine com um parceiro e com a orientação do seu sensei, sempre com controle. As fotos ficam só neste aparelho.</p>`}
+function photo(f){if(!f)return;const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const m=Math.min(1,520/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*m;c.height=im.height*m;c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);S.img[cur.id+':'+step]=c.toDataURL('image/jpeg',.72);if(!save()){delete S.img[cur.id+':'+step];alert('Sem espaço no aparelho. Remova algumas fotos.')}tech()};im.src=u}
+function rate(l){S.lvl[cur.id]=l;save();if(l>=1)xp(20,'tech:'+cur.id,'técnica');tech()}
+function rep(n){const id=cur.id;S.reps[id]=Math.max(0,(S.reps[id]||0)+n);const d=ds();if(n>0&&(S.repx[d]||0)<10){S.repx[d]=(S.repx[d]||0)+1;xp(1)}else save();tech()}
+function nextStep(){if(step<cur.s.length-1){step++;return tech()}if(!S.lvl[cur.id])S.lvl[cur.id]=1;save();xp(20,'tech:'+cur.id,'técnica concluída');go('trail')}
+function mind(){$('#app').innerHTML=`<h1>Mente</h1><div class="card" style="font-size:20px;font-weight:600;line-height:1.3">“${quote()}”</div>
+<div class="ring" id="ring">Pronto?</div><p class="mu" id="clock" style="text-align:center">Escolha a duração</p>
+<div class="chips" style="justify-content:center">${[3,5,10].map(m=>`<button class="chip ${m===mins?'on':''}" ${timer?'disabled':''} onclick="mins=${m};mind()">${m} min</button>`).join('')}</div>
+<button class="btn" onclick="toggle()">${timer?'Parar':'Começar respiração'}</button>
+<button class="btn o" onclick="invite()">Convidar um amigo</button>
+<p class="note">Exercício de relaxamento e foco. Não substitui acompanhamento médico ou psicológico.</p>`;if(timer){$('#ring').classList.add('go');tick()}}
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+function tick(){const c=$('#clock');if(c)c.textContent=fmt(left)}
+function phase(){const r=$('#ring');if(!r||!timer)return;const p=((Date.now()-t0)/1000)%14;r.textContent=p<4?'Inspire':p<8?'Segure':'Expire'}
+function toggle(){if(timer)return stop(),mind();left=mins*60;t0=Date.now();
+timer=setInterval(()=>{left--;if(left<=0){stop();S.mc++;xp(15,'mind:'+ds(),'meditação');if(V==='mind')mind();return}tick();phase()},1000);mind();phase()}
+function stop(){clearInterval(timer);timer=null}
+async function invite(){const d={title:'Ossu',text:'Venha treinar jiu-jitsu comigo no Ossu: técnicas passo a passo, treino e meditação.',url:SHARE_URL};
+try{if(navigator.share)return await navigator.share(d);await navigator.clipboard.writeText(d.text+' '+d.url);toast('Link copiado. Cole no WhatsApp.')}catch(e){}}
+function wchart(){const w=S.w.slice(-12);if(w.length<2)return'';const v=w.map(x=>x.kg),mn=Math.min(...v)-1,mx=Math.max(...v)+1,p=w.map((x,i)=>`${10+i*(280/(w.length-1))},${90-(x.kg-mn)/(mx-mn)*80}`).join(' ');
+return`<svg viewBox="0 0 300 100" width="100%" role="img" aria-label="Evolução do peso"><polyline points="${p}" fill="none" stroke="#E8C547" stroke-width="3" stroke-linejoin="round"/></svg>`}
+function addW(){const v=parseFloat(String($('#wk').value).replace(',','.'));if(!(v>=20&&v<=300))return toast('Digite um peso entre 20 e 300 kg');const d=ds();S.w=S.w.filter(x=>x.d!==d);S.w.push({d,kg:Math.round(v*10)/10});S.w.sort((a,b)=>a.d<b.d?-1:1);save();xp(10,'w:'+d,'peso');me()}
+function badges(){const n=T.filter(t=>(S.lvl[t.id]||0)>0).length,st=streak();
+return[['Primeira técnica',n>=1],['5 técnicas',n>=5],['Sequência de 3 dias',st>=3],['Sequência de 7 dias',st>=7],['10 treinos',S.logs.length>=10],['5 meditações',S.mc>=5],['Primeira pesagem',S.w.length>=1],['Faixa branca 100%',bpct('Branca')===100]]}
+function me(){const now=new Date(),cut=(()=>{const d=new Date();d.setDate(d.getDate()-30);return ds(d)})();
+const l30=S.logs.filter(x=>x.d>=cut),min=l30.reduce((a,x)=>a+x.m,0);
+const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));return[ds(d),'DSTQQSS'[d.getDay()]]});
+const mx=Math.max(60,...days.map(([d])=>S.logs.filter(x=>x.d===d).reduce((a,x)=>a+x.m,0)));
+const tr=days.filter(([d])=>S.logs.some(x=>x.d===d)).length;
+const all=Math.round(T.reduce((a,t)=>a+(S.lvl[t.id]||0),0)/T.length*25),w=S.w,last=w[w.length-1],dl=w.length>1?(last.kg-w[0].kg):0;
+$('#app').innerHTML=`<h1>Meu perfil</h1>
+<label class="mu" for="nm">Seu nome</label><input id="nm" value="${esc(S.name)}" placeholder="Como quer ser chamado?" onchange="S.name=this.value.trim().slice(0,40);save()">
+<div class="card"><b>Evolução geral: ${all}%</b><div class="bar"><i style="width:${all}%"></i></div>${BELTS.map(b=>`<div class="mu" style="margin-top:8px;font-size:13px">${b} · ${bpct(b)}%</div><div class="bar" style="margin-top:3px"><i style="width:${bpct(b)}%"></i></div>`).join('')}</div>
+<div class="card"><b>Peso</b><div class="mu" style="margin:4px 0">${last?last.kg+' kg'+(w.length>1?' · '+(dl>0?'+':'')+dl.toFixed(1)+' kg desde o início':''):'Nenhum peso registrado.'}</div>${wchart()}
+<div class="row"><input id="wk" type="number" step="0.1" inputmode="decimal" placeholder="Peso em kg" aria-label="Peso em kg"><button class="btn" style="margin:6px 0" onclick="addW()">Registrar</button></div></div>
+<div class="card"><b>Conquistas</b><div>${badges().map(([n,o])=>`<span class="bd ${o?'on':''}">${n}</span>`).join('')}</div></div>
+<div class="card"><b>Meta da semana: 3 treinos</b><div class="bar"><i style="width:${Math.min(100,tr/3*100)}%"></i></div><div class="mu" style="font-size:13px;margin-top:6px">${tr} de 3 dias treinados</div></div>
+<div class="stats"><div class="card"><b>${l30.length}</b><span class="mu">treinos em 30 dias</span></div><div class="card"><b>${(min/60).toFixed(1)}h</b><span class="mu">no tatame</span></div></div>
+<div class="card"><b>Esta semana</b><div class="chart" style="margin-top:12px">${days.map(([d,n])=>{const m=S.logs.filter(x=>x.d===d).reduce((a,x)=>a+x.m,0);return`<div><i style="height:${m/mx*80}px;${m?'':'background:var(--line)'}"></i>${n}</div>`}).join('')}</div></div>
+<input id="mn" type="number" inputmode="numeric" min="1" max="480" value="60" aria-label="Minutos de treino"><textarea id="nt" rows="2" maxlength="200" placeholder="Anotação do treino (opcional)"></textarea>
+<button class="btn" onclick="addLog()">Registrar treino de hoje (+30 XP)</button>
+<b>Diário</b>${S.logs.slice(-5).reverse().map(x=>`<div class="card">${x.d.split('-').reverse().join('/')} · ${x.m} min<div class="mu">${esc(x.n||'')}</div></div>`).join('')||'<p class="mu">Nenhum treino registrado ainda.</p>'}
+<button class="btn o" onclick="invite()">Convidar a Ana</button>
+<button class="btn o" onclick="if(confirm('Apagar todos os seus dados neste aparelho?')){localStorage.removeItem('ossu2');localStorage.removeItem('ossu');location.reload()}">Apagar meus dados</button>
+<p class="note">Seus dados ficam só neste aparelho. Login por WhatsApp e sincronização chegam com a versão Android.</p>`}
+function addLog(){const m=Math.min(480,Math.max(1,parseInt($('#mn').value)||60));S.logs.push({d:ds(),m,n:$('#nt').value.trim().slice(0,200)});save();xp(30,'log:'+ds(),'treino');me()}
+render();
+</script>
+</body>
+</html>
